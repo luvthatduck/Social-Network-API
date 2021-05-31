@@ -5,33 +5,39 @@ const dateFormat = require('../utils/dateFormat')
 const ReactionSchema = new Schema({
   reactionId: {
     type: Schema.Types.ObjectId,
-    default: () => new Types.ObjectId(),
+    default: () => new Types.ObjectId()
   },
   reactionBody: {
     type: String,
-    required: 'Reaction is required',
-    validate: [({ length }) => length < 280, 'Thought should be less than 280 characters']
-
+    required: true
   },
   username: {
     type: String,
-    required: 'Username is required',
+    required: 'Username is Required.'
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (createdAtVal) => dateFormat(createdAtVal)
-  },
+    // add getter method to format timestamp
+    get: createdAtVal => dateFormat(createdAtVal)
+  }
+},
+  {
+    toJSON: {
+      virtuals: true,
+      getters: true,
+    },
+    id: false
+  })
 
-});
 
 
 const ThoughtsSchema = new Schema({
   thoughtText: {
     type: String,
     required: 'Thought is required',
-    validate: [({ length }) => length <280, 'Thought should be less than 280 characters']
-   
+    validate: [({ length }) => length < 280, 'Thought should be less than 280 characters']
+
   },
   createdAt: {
     type: Date,
@@ -42,7 +48,7 @@ const ThoughtsSchema = new Schema({
     type: String,
     required: 'Username is required',
   },
-  reactions: [ reactionSchema ],
+  reactions: [ReactionSchema],
 },
   {
     toJSON: {
@@ -53,7 +59,7 @@ const ThoughtsSchema = new Schema({
   },
 );
 
-ThoughtsSchema.virtual('reactionCount').get(function() {
+ThoughtsSchema.virtual('reactionCount').get(function () {
   return this.reactions.length;
 });
 

@@ -1,4 +1,4 @@
-const User = require("../models")
+const {User} = require("../models")
 
 const userController = {
   // get all users
@@ -74,7 +74,7 @@ const userController = {
     User.findOneAndUpdate({
       id_: params.id
     },
-      {$addToSet: { friends:params.friendsId}},
+      {$push: { friends: params.friendsId}},
       {new: true},
     )
     .then(dbUserData => res.json(dbUserData))
